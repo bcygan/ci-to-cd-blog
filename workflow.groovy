@@ -3,7 +3,7 @@ def String jenkinsProductionHost = "localhost:8080/"
 def String pluginSource = "https://github.com/jenkinsci/subversion-plugin"
 def String pluginFile = "target/subversion.hpi"
 
-stage ‘Build’
+stage "Build"
 node(‘linux’) {
     git url:${pluginSource}
     def mvnHome = tool 'M3'

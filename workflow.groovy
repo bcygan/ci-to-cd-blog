@@ -16,20 +16,14 @@ stage ‘Integration Test’
 node(‘linux’) {
     unstash ‘${pluginFile}’
 
-jenkinsTestHost.uploadPluginAndRestart(${pluginFile})
-INCOMPLETE
+    jenkinsTestHost.uploadPluginAndRestart(${pluginFile})
+    
+    // perform whatever integration tests you defined
 }
-
-stage ‘Integration Test’
-node(‘linux’) {
-    INCOMPLETE
-}
-
-when those tests are green, use additional load tests as a quality gate
 
 stage ‘Load Tests’
 parallel ( 
-loadTestLinux: {
+    loadTestLinux: {
         node(‘linux’) {
         executeLoadTest(jenkinsHost)
         },
@@ -51,15 +45,15 @@ input ‘All tests are ok. Shall we continue to deploy into production (This wil
 
 class JenkinsHost { 
     // connnect to a Jenkins running locally
-def url = “localhost” 
-def port = “8080” 
-def path = “” 
+    def url = “localhost” 
+    def port = “8080” 
+    def path = “” 
 
-// instead of this, we could also spin up a Docker container
-// def image = docker. image('cloudbees/jenkins-enterprise')
+    // instead of this, we could also spin up a Docker container
+    // def image = docker. image('cloudbees/jenkins-enterprise')
 
-def updloadPluginAndRestartJenkins (String pluginFile) {
-    INCOMPLETE
-}
+    def updloadPluginAndRestartJenkins (String pluginFile) {
+        // upload plugin file and restart Jenkins
+    }
 }
 

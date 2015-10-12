@@ -25,7 +25,7 @@ stage 'Load Tests' // check that the clients still can work with the host
         node('linux') {
             executeLoadTest(jenkinsTestHost)
         }
-    }
+    },
     'load test windows': {
         node('windows') {
             executeLoadTest(jenkinsTestHost)

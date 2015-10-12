@@ -25,12 +25,12 @@ stage ‘Load Tests’
 parallel ( 
     loadTestLinux: {
         node(‘linux’) {
-        executeLoadTest(jenkinsHost)
-        },
-    },
+            executeLoadTest(jenkinsHost)
+        }
+    }
     loadTestWindows: {
         node(‘windows’) {
-        executeLoadTest(jenkinsHost)
+            executeLoadTest(jenkinsHost)
         }
     }
 )

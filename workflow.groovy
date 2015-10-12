@@ -46,9 +46,9 @@ def executeLoadTest ( JenkinsHost jenkinsHost ) {
 
 class JenkinsHost { 
     // connnect to a Jenkins running locally
-    def url = 'localhost'
-    def port = '8080' 
-    def path = '' 
+    def String url = 'localhost'
+    def int port = '8080' 
+    def String path = '' 
 
     // instead of this, we could also spin up a Docker container
     // def image = docker. image('cloudbees/jenkins-enterprise')

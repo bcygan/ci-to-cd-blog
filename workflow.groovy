@@ -17,9 +17,9 @@ class JenkinsHost {
     }
 }
 
-def jenkinsTestHost = new JenkinsHost ( url : "localhost", port : 8080 )
-def pluginSource = "https://github.com/jenkinsci/subversion-plugin"
-def pluginFile = "target/subversion.hpi"
+def JenkinsHost jenkinsTestHost = new JenkinsHost ( url : "localhost", port : 8080 )
+def String pluginSource = "https://github.com/jenkinsci/subversion-plugin"
+def String pluginFile = "target/subversion.hpi"
 def mvnHome = tool 'M3'
 
 stage ‘Build’

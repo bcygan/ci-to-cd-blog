@@ -1,5 +1,5 @@
 def jenkinsTestHost = new JenkinsHost ( url : ‘localhost’, port : 8080 )
-def pluginSource = ’https://github.com/jenkinsci/subversion-plugin’
+def pluginSource = "https://github.com/jenkinsci/subversion-plugin"
 def pluginFile = “target/subversion.hpi”
 def mvnHome = tool 'M3'
 

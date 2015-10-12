@@ -21,23 +21,22 @@ node(‘linux’) {
     // perform whatever integration tests you defined
 }
 
-stage ‘Load Tests’
-parallel ( 
-    loadTestLinux: {
+stage 'Load Tests'
+parallel 
+    'load test linux': {
         node(‘linux’) {
             executeLoadTest(jenkinsHost)
         }
     }
-    loadTestWindows: {
+    'load test windows': {
         node(‘windows’) {
             executeLoadTest(jenkinsHost)
         }
     }
-)
 
 stage ‘Deploy to Production’
 node(‘linux’) {
-input ‘All tests are ok. Shall we continue to deploy into production (This will initiate a Jenkins restart) ?’
+    input ‘All tests are ok. Shall we continue to deploy into production (This will initiate a Jenkins restart) ?’
     unstash ‘${pluginFile}’
     def jenkinsProductionHost = new JenkinsHost ( url : ‘localhost’, port : 8080 )
     jenkinsProductionHost.uploadPluginAndRestartJenkins ( ${pluginFile} )

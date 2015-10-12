@@ -11,7 +11,6 @@ node(‘linux’) {
 }
 checkpoint ‘plugin binary is built’
 
-def jenkinsTestHost = new JenkinsHost(‘test’)
 stage ‘Integration Test’
 node(‘linux’) {
     unstash ‘${pluginFile}’
@@ -21,38 +20,38 @@ node(‘linux’) {
     // perform whatever integration tests you defined
 }
 
-stage 'Load Tests'
+stage 'Load Tests' // check that the clients still can work with the host
 parallel 
     'load test linux': {
-        node(‘linux’) {
-            executeLoadTest(jenkinsHost)
+        node('linux') {
+            executeLoadTest(jenkinsTestHost)
         }
     }
     'load test windows': {
-        node(‘windows’) {
-            executeLoadTest(jenkinsHost)
+        node('windows') {
+            executeLoadTest(jenkinsTestHost)
         }
     }
 
-stage ‘Deploy to Production’
+stage 'Deploy to Production'
 node(‘linux’) {
-    input ‘All tests are ok. Shall we continue to deploy into production (This will initiate a Jenkins restart) ?’
-    unstash ‘${pluginFile}’
-    def jenkinsProductionHost = new JenkinsHost ( url : ‘localhost’, port : 8080 )
+    input 'All tests are ok. Shall we continue to deploy into production (This will initiate a Jenkins restart) ?''
+    unstash '${pluginFile}''
+    def jenkinsProductionHost = new JenkinsHost ( url : 'localhost', port : 8080 )
     jenkinsProductionHost.uploadPluginAndRestartJenkins ( ${pluginFile} )
 }
 
 class JenkinsHost { 
     // connnect to a Jenkins running locally
-    def url = “localhost” 
-    def port = “8080” 
-    def path = “” 
+    def url = 'localhost'
+    def port = '8080' 
+    def path = '' 
 
     // instead of this, we could also spin up a Docker container
     // def image = docker. image('cloudbees/jenkins-enterprise')
 
     def updloadPluginAndRestartJenkins (String pluginFile) {
-        // upload plugin file and restart Jenkins
+        // TODO upload plugin file and restart Jenkins
     }
 }
 

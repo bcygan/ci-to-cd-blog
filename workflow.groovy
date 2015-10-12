@@ -21,8 +21,7 @@ node(‘linux’) {
 }
 
 stage 'Load Tests' // check that the clients still can work with the host
-parallel 
-    'load test linux': {
+    parallel 'load test linux' : {
         node('linux') {
             executeLoadTest(jenkinsTestHost)
         }

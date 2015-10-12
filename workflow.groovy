@@ -8,13 +8,13 @@ node("linux") {
     git url:${pluginSource}
     def mvnHome = tool 'M3'
     sh "${mvnHome}/bin/mvn install"
-    stash '${pluginFile}'
+    stash "${pluginFile}"
 }
 checkpoint "plugin binary is built"
 
 stage "Integration Test"
 node("linux") {
-    unstash "${pluginFile}""
+    unstash "${pluginFile}"
 
     uploadPluginAndRestartJenkins(${jenkinsTestHost},${pluginFile})
     

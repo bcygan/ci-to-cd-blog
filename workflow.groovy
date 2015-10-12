@@ -1,23 +1,21 @@
 class JenkinsHost { 
     // connnect to a Jenkins running locally
-    def String url = 'localhost'
-    def int port = '8080' 
-    def String path = '' 
+    def String url 
 
     // instead of this, we could also spin up a Docker container
     // def image = docker. image('cloudbees/jenkins-enterprise')
 
     def updloadPluginAndRestartJenkins (String pluginFile) {
         // TODO upload plugin file and restart Jenkins
-        echo "uploading plugin file ${pluginFile} to Jenkins ${url}:${port}/${path}"
+        echo "uploading plugin file ${pluginFile} to Jenkins ${url}}"
     }
     
     def String getURL () {
-        return url + ":" + port + "/" + path 
+        return url 
     }
 }
 
-def JenkinsHost jenkinsTestHost = new JenkinsHost ( url : "localhost", port : 8080 )
+def JenkinsHost jenkinsTestHost = new JenkinsHost ( "localhost:8080/" )
 def String pluginSource = "https://github.com/jenkinsci/subversion-plugin"
 def String pluginFile = "target/subversion.hpi"
 def mvnHome = tool 'M3'
@@ -55,7 +53,7 @@ stage 'Deploy to Production'
 node(‘linux’) {
     input "All tests are ok. Shall we continue to deploy into production (This will initiate a Jenkins restart) ?"
     unstash "${pluginFile}"
-    def jenkinsProductionHost = new JenkinsHost ( url : 'localhost', port : 8080 )
+    def jenkinsProductionHost = new JenkinsHost ( 'localhost:8080/' )
     jenkinsProductionHost.uploadPluginAndRestartJenkins ( ${pluginFile} )
 }
 

@@ -1,21 +1,5 @@
-class JenkinsHost { 
-    // connnect to a Jenkins running locally
-    def String url 
-
-    // instead of this, we could also spin up a Docker container
-    // def image = docker. image('cloudbees/jenkins-enterprise')
-
-    def updloadPluginAndRestartJenkins (String pluginFile) {
-        // TODO upload plugin file and restart Jenkins
-        echo "uploading plugin file ${pluginFile} to Jenkins ${url}}"
-    }
-    
-    def String getURL () {
-        return url 
-    }
-}
-
-def JenkinsHost jenkinsTestHost = new JenkinsHost ( "localhost:8080/" )
+def String jenkinsTestHost = "localhost:8080/"
+def String jenkinsProductionHost = "localhost:8080/"
 def String pluginSource = "https://github.com/jenkinsci/subversion-plugin"
 def String pluginFile = "target/subversion.hpi"
 def mvnHome = tool 'M3'
@@ -32,7 +16,7 @@ stage ‘Integration Test’
 node(‘linux’) {
     unstash ‘${pluginFile}’
 
-    jenkinsTestHost.uploadPluginAndRestart(${pluginFile})
+    uploadPluginAndRestartJenkins(${jenkinsTestHost},${pluginFile})
     
     // perform whatever integration tests you defined
 }
@@ -53,10 +37,14 @@ stage 'Deploy to Production'
 node(‘linux’) {
     input "All tests are ok. Shall we continue to deploy into production (This will initiate a Jenkins restart) ?"
     unstash "${pluginFile}"
-    def jenkinsProductionHost = new JenkinsHost ( 'localhost:8080/' )
-    jenkinsProductionHost.uploadPluginAndRestartJenkins ( ${pluginFile} )
+    uploadPluginAndRestartJenkins ( jenkinsProductionHost, ${pluginFile} )
 }
 
-def executeLoadTest ( JenkinsHost jenkinsHost ) {
-    echo "executing load test against Jenkins host " + jenkinsHost.getURL()
+def executeLoadTest ( String jenkinsHost ) {
+    echo "executing load test against Jenkins host " + jenkinsHost
+}
+
+def uploadPluginAndRestartJenkins ( String jenkinsHost, String pluginFile ) {
+    echo "uploading ${pluginFile} to ${jenkinsHost}"
+}
 }

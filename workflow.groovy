@@ -47,4 +47,4 @@ def executeLoadTest ( String jenkinsHost ) {
 def uploadPluginAndRestartJenkins ( String jenkinsHost, String pluginFile ) {
     echo "uploading ${pluginFile} to ${jenkinsHost}"
 }
-}
+

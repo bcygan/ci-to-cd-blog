@@ -40,6 +40,10 @@ node(‘linux’) {
     jenkinsProductionHost.uploadPluginAndRestartJenkins ( ${pluginFile} )
 }
 
+def executeLoadTest ( JenkinsHost jenkinsHost ) {
+    echo "executing load test against Jenkins host " + jenkinsHost.getURL()
+}
+
 class JenkinsHost { 
     // connnect to a Jenkins running locally
     def url = 'localhost'
@@ -51,6 +55,11 @@ class JenkinsHost {
 
     def updloadPluginAndRestartJenkins (String pluginFile) {
         // TODO upload plugin file and restart Jenkins
+        echo "uploading plugin file ${pluginFile} to Jenkins ${url}:${port}/${path}"
+    }
+    
+    def String getURL () {
+        return url + ":" + port + "/" + path 
     }
 }
 

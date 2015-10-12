@@ -34,8 +34,8 @@ stage 'Load Tests' // check that the clients still can work with the host
 
 stage 'Deploy to Production'
 node(‘linux’) {
-    input 'All tests are ok. Shall we continue to deploy into production (This will initiate a Jenkins restart) ?''
-    unstash '${pluginFile}''
+    input "All tests are ok. Shall we continue to deploy into production (This will initiate a Jenkins restart) ?"
+    unstash "${pluginFile}"
     def jenkinsProductionHost = new JenkinsHost ( url : 'localhost', port : 8080 )
     jenkinsProductionHost.uploadPluginAndRestartJenkins ( ${pluginFile} )
 }

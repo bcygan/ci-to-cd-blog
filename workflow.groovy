@@ -4,37 +4,37 @@ def String pluginSource = "https://github.com/jenkinsci/subversion-plugin"
 def String pluginFile = "target/subversion.hpi"
 
 stage "Build"
-node(‘linux’) {
+node("linux") {
     git url:${pluginSource}
     def mvnHome = tool 'M3'
     sh "${mvnHome}/bin/mvn install"
     stash '${pluginFile}'
 }
-checkpoint ‘plugin binary is built’
+checkpoint "plugin binary is built"
 
-stage ‘Integration Test’
-node(‘linux’) {
-    unstash ‘${pluginFile}’
+stage "Integration Test"
+node("linux") {
+    unstash "${pluginFile}""
 
     uploadPluginAndRestartJenkins(${jenkinsTestHost},${pluginFile})
     
     // perform whatever integration tests you defined
 }
 
-stage 'Load Tests' // check that the clients still can work with the host
-    parallel 'load test linux' : {
-        node('linux') {
+stage "Load Tests" // check that the clients still can work with the host
+    parallel "load test linux" : {
+        node("linux") {
             executeLoadTest(jenkinsTestHost)
         }
     },
-    'load test windows': {
-        node('windows') {
+    "load test windows": {
+        node("windows") {
             executeLoadTest(jenkinsTestHost)
         }
     }
 
-stage 'Deploy to Production'
-node(‘linux’) {
+stage "Deploy to Production"
+node("linux") {
     input "All tests are ok. Shall we continue to deploy into production (This will initiate a Jenkins restart) ?"
     unstash "${pluginFile}"
     uploadPluginAndRestartJenkins ( jenkinsProductionHost, ${pluginFile} )

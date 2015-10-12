@@ -5,7 +5,7 @@ def String pluginFile = "target/subversion.hpi"
 
 stage "Build"
 node("linux") {
-    git url:${pluginSource}
+    git url:pluginSource
     def mvnHome = tool 'M3'
     sh "${mvnHome}/bin/mvn install"
     stash "${pluginFile}"
@@ -16,7 +16,7 @@ stage "Integration Test"
 node("linux") {
     unstash "${pluginFile}"
 
-    uploadPluginAndRestartJenkins(${jenkinsTestHost},${pluginFile})
+    uploadPluginAndRestartJenkins(jenkinsTestHost,pluginFile)
     
     // perform whatever integration tests you defined
 }
@@ -37,7 +37,7 @@ stage "Deploy to Production"
 node("linux") {
     input "All tests are ok. Shall we continue to deploy into production (This will initiate a Jenkins restart) ?"
     unstash "${pluginFile}"
-    uploadPluginAndRestartJenkins ( jenkinsProductionHost, ${pluginFile} )
+    uploadPluginAndRestartJenkins ( jenkinsProductionHost, pluginFile )
 }
 
 def executeLoadTest ( String jenkinsHost ) {

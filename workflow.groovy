@@ -59,6 +59,11 @@ def executeLoadTest ( String jenkinsHost ) {
 
 def uploadPluginAndRestartJenkins ( String jenkinsHost, String pluginFile ) {
     echo "uploading ${pluginFile} to ${jenkinsHost}"
-    unstash "${pluginFile}"
+    unstash "plugin"
+    // execute whatever mechanism you have for deployment of plugins
+    // e.g. 
+    // scp ${pluginFile} jenkins@jenkins.local:/var/lib/jenkins/plugins
+    // java -jar <somee-path>/jenkins-cli.jar -s ${jenkinsHost} safe-restart;
+    //
 }
 

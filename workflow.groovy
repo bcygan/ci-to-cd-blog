@@ -16,7 +16,7 @@ node("linux") {
     
     echo "Build - stashing plugin file ${pluginFile}"
     
-    stash name: "plugin", includes: "target/${pluginFile}"
+    stash includes: "target/${pluginFile}"
     
     echo "Build - stashed plugin file ${pluginFile}"
 }

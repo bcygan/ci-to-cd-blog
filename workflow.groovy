@@ -1,19 +1,32 @@
 def String jenkinsTestHost = "localhost:8080/"
 def String jenkinsProductionHost = "localhost:8080/"
 def String pluginSource = "https://github.com/jenkinsci/subversion-plugin"
-def String pluginFile = "target/subversion.hpi"
+def String pluginFile = "subversion.hpi"
 
 stage "Build"
 node("linux") {
+    echo "Build - getting source code from ${pluginSource}"
+    
     git url:pluginSource
+    
+    echo "Build - running maven"
+    
     def mvnHome = tool 'M3'
     sh "${mvnHome}/bin/mvn -DskipTests=true install"
-    stash "${pluginFile}"
+    
+    echo "Build - stashing plugin file ${pluginFile}"
+    
+    stash "target/${pluginFile}"
+    
+    echo "Build - stashed plugin file ${pluginFile}"
 }
+echo "Build done - before checkpoint"
 checkpoint "plugin binary is built"
+echo "Build done - after checkpoint"
 
 stage "Integration Test"
 node("linux") {
+    echo "Integration Test - unstashing plugin file ${pluginFile}"
     unstash "${pluginFile}"
 
     uploadPluginAndRestartJenkins(jenkinsTestHost,pluginFile)
@@ -36,7 +49,7 @@ stage "Load Tests" // check that the clients still can work with the host
 stage "Deploy to Production"
 node("linux") {
     input "All tests are ok. Shall we continue to deploy into production (This will initiate a Jenkins restart) ?"
-    unstash "${pluginFile}"
+//    unstash "${pluginFile}"
     uploadPluginAndRestartJenkins ( jenkinsProductionHost, pluginFile )
 }
 
@@ -46,5 +59,6 @@ def executeLoadTest ( String jenkinsHost ) {
 
 def uploadPluginAndRestartJenkins ( String jenkinsHost, String pluginFile ) {
     echo "uploading ${pluginFile} to ${jenkinsHost}"
+    unstash "${pluginFile}"
 }
 

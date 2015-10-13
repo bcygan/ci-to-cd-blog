@@ -35,13 +35,18 @@ node("linux") {
 }
 
 stage "Load Tests" // check that the clients still can work with the host
-    parallel "load test linux" : {
+    parallel "load test linux #1" : {
         node("linux") {
             executeLoadTest(jenkinsTestHost)
         }
     },
-    "load test windows": {
-        node("windows") {
+    "load test liunx #2": {
+        node("linux") {
+            executeLoadTest(jenkinsTestHost)
+        }
+    },
+    "load test liunx #3": {
+        node("linux") {
             executeLoadTest(jenkinsTestHost)
         }
     }

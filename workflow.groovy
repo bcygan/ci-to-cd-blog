@@ -13,7 +13,7 @@ node("linux") {
     echo "++++++++++ Build - running maven"
     
     def mvnHome = tool 'M3'
-    sh "${mvnHome}/bin/mvn -DskipTests=true install"
+    sh "${mvnHome}/bin/mvn -DskipTests=true install" // -DskipTests is usually not recommended 
     
     echo "++++++++++ Build - stashing plugin file ${pluginFile}"
     
@@ -21,9 +21,9 @@ node("linux") {
 }
 checkpoint "plugin binary is built"
 
-stage "Integration Test"
+stage "Integration Tests"
 node("linux") {
-    echo "++++++++++ Integration Test - unstashing plugin file ${pluginFile}"
+    echo "++++++++++ Integration Tests ++++++++++"
 
     uploadPluginAndRestartJenkins(jenkinsTestHost,stashName)
     
@@ -55,13 +55,13 @@ node("linux") {
 }
 
 def executeLoadTest ( String jenkinsHost ) {
-    echo "++++++++++ executing load test against Jenkins host " + jenkinsHost
+    echo "++++++++++ executing load test against Jenkins host ${jenkinsHost} ++++++++++"
     
     // do here whatever you like, e.g. Selenium, calling the REST API with curl, ...
 }
 
 def uploadPluginAndRestartJenkins ( String jenkinsHost, String stashName ) {
-    echo "++++++++++ uploading plugin to ${jenkinsHost}"
+    echo "++++++++++ uploading plugin to ${jenkinsHost} ++++++++++"
     unstash stashName
     // execute whatever mechanism you have for deployment of plugins
     // e.g. 

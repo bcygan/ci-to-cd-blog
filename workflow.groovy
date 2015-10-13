@@ -7,7 +7,7 @@ stage "Build"
 node("linux") {
     git url:pluginSource
     def mvnHome = tool 'M3'
-    sh "${mvnHome}/bin/mvn install"
+    sh "${mvnHome}/bin/mvn -DskipTests=true install"
     stash "${pluginFile}"
 }
 checkpoint "plugin binary is built"

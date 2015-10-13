@@ -1,5 +1,5 @@
 def String jenkinsTestHost = "localhost:8080/"
-def String jenkinsProductionHost = "localhost:8080/"
+def String jenkinsProductionHost = "localhost:8081/"
 def String pluginSource = "https://github.com/jenkinsci/subversion-plugin"
 def String pluginFile = "subversion.hpi"
 

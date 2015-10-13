@@ -16,7 +16,7 @@ node("linux") {
     
     echo "Build - stashing plugin file ${pluginFile}"
     
-    stash includes: "target/${pluginFile}"
+    stash includes: "target/${pluginFile}" // stash these files in the default stash
     
     echo "Build - stashed plugin file ${pluginFile}"
 }
@@ -27,7 +27,7 @@ echo "Build done - after checkpoint"
 stage "Integration Test"
 node("linux") {
     echo "Integration Test - unstashing plugin file ${pluginFile}"
-    unstash "${pluginFile}"
+    unstash // this will unstash all previously stashed files form the dafult stash
 
     uploadPluginAndRestartJenkins(jenkinsTestHost,pluginFile)
     

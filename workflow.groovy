@@ -22,28 +22,27 @@ node {
 checkpoint "plugin binary is built"
 
 stage "Integration Tests and Quality Metrics"
-parallel
-    "Integration Tests": {
-        node {
-            echo "++++++++++ Integration Tests ++++++++++"
+parallel "Integration Tests": {
+    node {
+        echo "++++++++++ Integration Tests ++++++++++"
 
-            def mvnHome = tool 'M3'
-            sh "${mvnHome}/bin/mvn integration-test"  
-            }
-        },
-    "Quality Metrics": {
-        node {
-            echo "++++++++++ Quality Metrics ++++++++++"
+        def mvnHome = tool 'M3'
+        sh "${mvnHome}/bin/mvn integration-test"  
+    }
+},
+"Quality Metrics": {
+    node {
+        echo "++++++++++ Quality Metrics ++++++++++"
             
-            def mvnHome = tool 'M3'
-            sh "${mvnHome}/bin/mvn sonar:sonar"  
-            }
-        }
+        def mvnHome = tool 'M3'
+        sh "${mvnHome}/bin/mvn sonar:sonar"  
+    }
+}
 
 // check that the clients still can work with the host
 // here we limit concurrency to 2 because we just have 2 slave nodes
 stage name: "Load Tests", concurrency: 2 
-    parallel 
+parallel 
     "load test #1" : {
         node {
             executeLoadTest(jenkinsTestHost)

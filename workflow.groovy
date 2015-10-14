@@ -5,7 +5,7 @@ def String pluginFile = "subversion.hpi"
 def String stashName = "plugin"
 
 stage "Build"
-node("linux") {
+node {
     echo "++++++++++ Build - getting source code from ${pluginSource}"
     
     git url:pluginSource
@@ -13,7 +13,7 @@ node("linux") {
     echo "++++++++++ Build - running maven"
     
     def mvnHome = tool 'M3'
-    sh "${mvnHome}/bin/mvn -DskipTests=true install" // -DskipTests is usually not recommended 
+    sh "${mvnHome}/bin/mvn -DskipTests=true install" // we will come back to the tests later on 
     
     echo "++++++++++ Build - stashing plugin file ${pluginFile}"
     
@@ -21,31 +21,44 @@ node("linux") {
 }
 checkpoint "plugin binary is built"
 
-stage "Integration Tests"
-node("linux") {
-    echo "++++++++++ Integration Tests ++++++++++"
+stage "Integration Tests and Quality Metrics"
+parallel
+    "Integration Tests": {
+        node {
+            echo "++++++++++ Integration Tests ++++++++++"
 
-    uploadPluginAndRestartJenkins(jenkinsTestHost,stashName)
-    
-    // perform whatever integration tests you defined
+            def mvnHome = tool 'M3'
+            sh "${mvnHome}/bin/mvn integration-test"  
+            }
+        },
+    "Quality Metrics": {
+        node {
+            echo "++++++++++ Quality Metrics ++++++++++"
+            
+            def mvnHome = tool 'M3'
+            sh "${mvnHome}/bin/mvn sonar:sonar"  
+            }
+        }
+
+// check that the clients still can work with the host
+// here we limit concurrency to 2 because we just have 2 slave nodes
+stage name: "Load Tests", concurrency: 2 
+    parallel 
+    "load test linux #1" : {
+        node("linux") {
+            executeLoadTest(jenkinsTestHost)
+        }
+    },
+    "load test linux #2": {
+        node("linux") {
+            executeLoadTest(jenkinsTestHost)
+        }
+    },
+    "load test linux #3": {
+        node("linux") {
+            executeLoadTest(jenkinsTestHost)
+        }n
 }
-
-stage "Load Tests" // check that the clients still can work with the host
-    parallel "load test linux #1" : {
-        node("linux") {
-            executeLoadTest(jenkinsTestHost)
-        }
-    },
-    "load test liunx #2": {
-        node("linux") {
-            executeLoadTest(jenkinsTestHost)
-        }
-    },
-    "load test liunx #3": {
-        node("linux") {
-            executeLoadTest(jenkinsTestHost)
-        }
-    }
 checkpoint "all tests are done"    
 
 stage "Deploy to Production"

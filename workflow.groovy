@@ -44,25 +44,25 @@ parallel
 // here we limit concurrency to 2 because we just have 2 slave nodes
 stage name: "Load Tests", concurrency: 2 
     parallel 
-    "load test linux #1" : {
-        node("linux") {
+    "load test #1" : {
+        node {
             executeLoadTest(jenkinsTestHost)
         }
     },
-    "load test linux #2": {
-        node("linux") {
+    "load test #2": {
+        node {
             executeLoadTest(jenkinsTestHost)
         }
     },
-    "load test linux #3": {
-        node("linux") {
+    "load test #3": {
+        node {
             executeLoadTest(jenkinsTestHost)
         }n
 }
 checkpoint "all tests are done"    
 
 stage "Deploy to Production"
-node("linux") {
+node {
     input "All tests are ok. Shall we continue to deploy into production (This will initiate a Jenkins restart) ?"
     uploadPluginAndRestartJenkins ( jenkinsProductionHost, "plugin" )
 }

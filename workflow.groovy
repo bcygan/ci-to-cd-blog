@@ -38,6 +38,7 @@ parallel "Integration Tests": {
         sh "${mvnHome}/bin/mvn sonar:sonar"  
     }
 }
+checkpoint "integration tests and quality metrics are done"
 
 // check that the clients still can work with the host
 // here we limit concurrency to 2 because we just have 2 slave nodes

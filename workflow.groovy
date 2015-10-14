@@ -42,21 +42,20 @@ parallel "Integration Tests": {
 // check that the clients still can work with the host
 // here we limit concurrency to 2 because we just have 2 slave nodes
 stage name: "Load Tests", concurrency: 2 
-parallel 
-    "load test #1" : {
-        node {
-            executeLoadTest(jenkinsTestHost)
-        }
-    },
-    "load test #2": {
-        node {
-            executeLoadTest(jenkinsTestHost)
-        }
-    },
-    "load test #3": {
-        node {
-            executeLoadTest(jenkinsTestHost)
-        }n
+parallel "Load Test #1" : {
+    node {
+        executeLoadTest(jenkinsTestHost)
+    }
+},
+"Load Test #2": {
+    node {
+        executeLoadTest(jenkinsTestHost)
+    }
+},
+"Load Test #3": {
+    node {
+        executeLoadTest(jenkinsTestHost)
+    }
 }
 checkpoint "all tests are done"    
 

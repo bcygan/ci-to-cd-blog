@@ -9,6 +9,7 @@ node {
     echo "++++++++++ Build - getting source code from ${pluginSource}"
     
     git url:pluginSource
+    stash name: stashName+"-sources", includes "src/*"
     
     echo "++++++++++ Build - running maven"
     
@@ -26,6 +27,7 @@ parallel "Integration Tests": {
     node {
         echo "++++++++++ Integration Tests ++++++++++"
 
+        unstash stashName+"-sources"
         def mvnHome = tool 'M3'
         sh "${mvnHome}/bin/mvn integration-test"  
     }
@@ -34,6 +36,7 @@ parallel "Integration Tests": {
     node {
         echo "++++++++++ Quality Metrics ++++++++++"
             
+        unstash stashName+"-sources"
         def mvnHome = tool 'M3'
         sh "${mvnHome}/bin/mvn sonar:sonar"  
     }
@@ -79,6 +82,9 @@ def uploadPluginAndRestartJenkins ( String jenkinsHost, String stashName ) {
     // e.g. 
     // scp ${pluginFile} jenkins@jenkins.local:/var/lib/jenkins/plugins
     // java -jar <some-path>/jenkins-cli.jar -s ${jenkinsHost} safe-restart;
+    // docker.image("").inside {
+    //    
+    // }
     //
 }
 

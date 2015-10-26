@@ -9,7 +9,7 @@ node {
     echo "++++++++++ Build - getting source code from ${pluginSource}"
     
     git url:pluginSource
-    stash name: stashName+"-sources", includes "src/*"
+    stash name: stashName+"-sources", excludes "target/*"
     
     echo "++++++++++ Build - running maven"
     

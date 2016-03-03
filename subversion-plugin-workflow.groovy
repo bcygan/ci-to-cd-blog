@@ -18,7 +18,12 @@ node {
     
     echo "++++++++++ Build - stashing plugin file ${pluginFile}"
     
-    stash name: stashName, includes: "target/${pluginFile}" 
+    try {
+        // probably better to recursively collect all .hpi files into a tar.gz
+        stash name: stashName, includes: "target/${pluginFile}" 
+    } catch (AbortException e) {
+        echo "empty stash (no plugin file)"
+    }
 }
 checkpoint "plugin binary is built"
 

@@ -23,6 +23,7 @@ node {
         stash name: stashName, includes: "target/${pluginFile}" 
     } catch (AbortException e) {
         echo "empty stash (no plugin file)"
+        currentBuild.result = 'SUCCESS' 
     }
 }
 checkpoint "plugin binary is built"

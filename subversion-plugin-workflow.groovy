@@ -13,8 +13,7 @@ node {
     
     echo "++++++++++ Build - running maven"
     
-    def mvnHome = tool 'M3'
-    sh "${mvnHome}/bin/mvn -DskipTests=true install" // we will come back to the tests later on 
+    runMaven "-DskipTests=true install" // we will come back to the tests later on 
     
     echo "++++++++++ Build - stashing plugin file ${pluginFile}"
     
@@ -31,8 +30,7 @@ parallel "Integration Tests": {
         echo "++++++++++ Integration Tests ++++++++++"
 
         unstash stashName+"-sources"
-        def mvnHome = tool 'M3'
-        sh "${mvnHome}/bin/mvn integration-test"  
+        runMaven "integration-test"  
     }
 },
 "Quality Metrics": {
@@ -40,8 +38,7 @@ parallel "Integration Tests": {
         echo "++++++++++ Quality Metrics ++++++++++"
             
         unstash stashName+"-sources"
-        def mvnHome = tool 'M3'
-        sh "${mvnHome}/bin/mvn sonar:sonar"  
+        runMaven "sonar:sonar"  
     }
 }
 //checkpoint "integration tests and quality metrics are done"
@@ -70,6 +67,11 @@ stage "Deploy to Production"
 node {
     input "All tests are ok. Shall we continue to deploy into production (This will initiate a Jenkins restart) ?"
     uploadPluginAndRestartJenkins ( jenkinsProductionHost, "plugin" )
+}
+
+def runMaven ( String parameters ) {
+    def mvnHome = tool 'M3'
+    sh "${mvnHome}/bin/mvn "+parameters 
 }
 
 def executeLoadTest ( String jenkinsHost ) {

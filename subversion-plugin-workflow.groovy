@@ -18,13 +18,10 @@ node {
     
     echo "++++++++++ Build - stashing plugin file ${pluginFile}"
     
-    try {
-        // probably better to recursively collect all .hpi files into a tar.gz
-        stash name: stashName, includes: "target/${pluginFile}" 
-    } catch (AbortException e) {
-        echo "empty stash (no plugin file)"
-        currentBuild.result = 'SUCCESS' 
-    }
+    // recursively collect all .hpi files into a tar.gz
+    sh "find . -path '*/target/*.hpi' |grep -v 'test-classes' >target/plugins.list"
+    sh "tar -czvf target/${stashName}.tgz --files-from ./target/plugins.list"
+    stash name: stashName, includes: "target/${stashName}.tgz" 
 }
 checkpoint "plugin binary is built"
 

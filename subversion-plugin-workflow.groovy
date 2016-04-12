@@ -23,7 +23,7 @@ node {
     sh "tar -czvf target/${stashName}.tgz --files-from ./target/plugins.list"
     stash name: stashName, includes: "target/${stashName}.tgz" 
 }
-checkpoint "plugin binary is built"
+// checkpoint "plugin binary is built"
 
 stage "Integration Tests and Quality Metrics"
 parallel "Integration Tests": {
@@ -44,7 +44,7 @@ parallel "Integration Tests": {
         sh "${mvnHome}/bin/mvn sonar:sonar"  
     }
 }
-checkpoint "integration tests and quality metrics are done"
+//checkpoint "integration tests and quality metrics are done"
 
 // check that the clients still can work with the host
 // here we limit concurrency to 2 because we just have 2 slave nodes
@@ -64,7 +64,7 @@ parallel "Load Test #1" : {
         executeLoadTest(jenkinsTestHost)
     }
 }
-checkpoint "all tests are done"    
+//checkpoint "all tests are done"    
 
 stage "Deploy to Production"
 node {

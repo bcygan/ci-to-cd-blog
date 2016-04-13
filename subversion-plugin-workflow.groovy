@@ -5,7 +5,7 @@ def String pluginFile = "subversion.hpi"
 def String stashName = "plugin"
 
 stage "Build"
-node {
+node ('jdk8') {
     echo "++++++++++ Build - getting source code from ${pluginSource}"
     
     git url:pluginSource
@@ -26,7 +26,7 @@ node {
 
 stage "Integration Tests and Quality Metrics"
 parallel "Integration Tests": {
-    node {
+    node ('jdk8') {
         echo "++++++++++ Integration Tests ++++++++++"
 
         unstash stashName+"-sources"
@@ -34,7 +34,7 @@ parallel "Integration Tests": {
     }
 },
 "Quality Metrics": {
-    node {
+    node ('jdk8') {
         echo "++++++++++ Quality Metrics ++++++++++"
             
         unstash stashName+"-sources"
@@ -47,24 +47,24 @@ parallel "Integration Tests": {
 // here we limit concurrency to 2 because we just have 2 slave nodes
 stage name: "Load Tests", concurrency: 2 
 parallel "Load Test #1" : {
-    node {
+    node ('jdk8') {
         executeLoadTest(jenkinsTestHost)
     }
 },
 "Load Test #2": {
-    node {
+    node ('jdk8') {
         executeLoadTest(jenkinsTestHost)
     }
 },
 "Load Test #3": {
-    node {
+    node ('jdk8') {
         executeLoadTest(jenkinsTestHost)
     }
 }
 //checkpoint "all tests are done"    
 
 stage "Deploy to Production"
-node {
+node ('jdk8') {
     input "All tests are ok. Shall we continue to deploy into production (This will initiate a Jenkins restart) ?"
     uploadPluginAndRestartJenkins ( jenkinsProductionHost, "plugin" )
 }

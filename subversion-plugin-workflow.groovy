@@ -38,7 +38,7 @@ parallel "Integration Tests": {
         echo "++++++++++ Quality Metrics ++++++++++"
             
         unstash stashName+"-sources"
-        runMaven "sonar:sonar"  
+        //runMaven "sonar:sonar"  
     }
 }
 //checkpoint "integration tests and quality metrics are done"

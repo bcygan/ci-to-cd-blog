@@ -30,7 +30,7 @@ parallel "Integration Tests": {
         echo "++++++++++ Integration Tests ++++++++++"
 
         unstash stashName+"-sources"
-        runMaven "integration-test"  
+        //runMaven "integration-test"  
     }
 },
 "Quality Metrics": {

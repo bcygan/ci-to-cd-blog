@@ -71,7 +71,7 @@ node ('jdk8') {
 
 def runMaven ( String parameters ) {
     def mvnHome = tool 'maven-3.3'
-    sh "${mvnHome}/bin/mvn "+parameters 
+    sh "${mvnHome}/bin/mvn -B "+parameters 
 }
 
 def executeLoadTest ( String jenkinsHost ) {

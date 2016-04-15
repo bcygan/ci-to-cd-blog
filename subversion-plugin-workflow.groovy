@@ -70,7 +70,7 @@ node ('jdk8') {
 }
 
 def runMaven ( String parameters ) {
-    def mvnHome = tool 'M3'
+    def mvnHome = tool 'maven-3.3'
     sh "${mvnHome}/bin/mvn "+parameters 
 }
 
